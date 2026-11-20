@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' · SecureMail'">SecureMail</title>
+    <script th:src="@{/js/Theme.js}"></script>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css}">
+    <link rel="stylesheet" th:href="@{/css/App.css}">
+</head>
+<body>
+<!-- Bootstrap JS + app JS (CSP allows only same-origin scripts, so no inline JS anywhere) -->
+<th:block th:fragment="scripts">
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/js/App.js}"></script>
+</th:block>
+</body>
+</html>

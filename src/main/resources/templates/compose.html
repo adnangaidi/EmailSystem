@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head('Compose')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar('mail')}"></nav>
+
+<main class="container-xl py-4">
+    <div class="row g-4">
+        <div class="col-lg-3 col-xl-2">
+            <aside th:replace="~{fragments/navbar :: mailSidebar('compose')}"></aside>
+        </div>
+
+        <div class="col-lg-9 col-xl-10">
+            <div th:replace="~{fragments/navbar :: flash}"></div>
+
+            <div class="alert alert-warning" th:if="${param.tooLarge}">
+                <i class="bi bi-exclamation-triangle me-1"></i>The upload is too large (max 10 MB per file).
+            </div>
+
+            <h1 class="h4 fw-bold mb-3"><i class="bi bi-pencil-square me-2"></i>New message</h1>
+
+            <div class="card">
+                <div class="card-body p-4">
+                    <form th:action="@{/compose}" th:object="${form}" method="post" enctype="multipart/form-data" novalidate>
+
+                        <div class="alert alert-danger py-2" th:if="${#fields.hasGlobalErrors()}">
+                            <div th:each="err : ${#fields.globalErrors()}" th:text="${err}">Error</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="to" class="form-label fw-semibold">To</label>
+                            <input type="text" class="form-control" id="to" th:field="*{to}" placeholder="name@example.com, other@example.com"
+                                   th:classappend="${#fields.hasErrors('to')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:errors="*{to}">Error</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="cc" class="form-label fw-semibold">Cc <span class="text-body-secondary fw-normal">(optional)</span></label>
+                            <input type="text" class="form-control" id="cc" th:field="*{cc}"
+                                   th:classappend="${#fields.hasErrors('cc')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:errors="*{cc}">Error</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="subject" class="form-label fw-semibold">Subject</label>
+                            <input type="text" class="form-control" id="subject" th:field="*{subject}"
+                                   th:classappend="${#fields.hasErrors('subject')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:errors="*{subject}">Error</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="body" class="form-label fw-semibold">Message</label>
+                            <textarea class="form-control" id="body" rows="12" th:field="*{body}"
+                                      th:classappend="${#fields.hasErrors('body')} ? 'is-invalid'"></textarea>
+                            <div class="invalid-feedback" th:errors="*{body}">Error</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="attachments" class="form-label fw-semibold">
+                                <i class="bi bi-paperclip me-1"></i>Attachments
+                                <span class="text-body-secondary fw-normal">(max 5 files, 10 MB each)</span>
+                            </label>
+                            <input type="file" class="form-control" id="attachments" name="attachments" multiple>
+                            <ul id="file-list" class="list-unstyled mt-2 mb-0"></ul>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary px-4"><i class="bi bi-send me-1"></i>Send</button>
+                            <a th:href="@{/inbox}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<th:block th:replace="~{fragments/head :: scripts}"></th:block>
+</body>
+</html>

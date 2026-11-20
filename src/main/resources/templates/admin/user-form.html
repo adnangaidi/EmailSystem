@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head(${form.id == null} ? 'New account' : 'Edit account')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar('admin')}"></nav>
+
+<main class="container-xl py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-8">
+
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <a th:href="@{/admin/users}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i></a>
+                <h1 class="h4 fw-bold mb-0" th:text="${form.id == null} ? 'New account' : 'Edit account'">New account</h1>
+            </div>
+
+            <form th:action="${form.id == null} ? @{/admin/users/new} : @{/admin/users/{id}/edit(id=${form.id})}"
+                  th:object="${form}" method="post" novalidate>
+
+                <div class="alert alert-danger py-2" th:if="${#fields.hasGlobalErrors()}">
+                    <div th:each="err : ${#fields.globalErrors()}" th:text="${err}">Error</div>
+                </div>
+
+                <!-- account -->
+                <div class="card mb-4">
+                    <div class="card-header bg-transparent fw-semibold"><i class="bi bi-person-badge me-2"></i>Account</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" th:field="*{username}"
+                                       th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:errors="*{username}">Error</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" th:field="*{email}"
+                                       th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:errors="*{email}">Error</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" th:field="*{password}"
+                                       th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'" autocomplete="new-password">
+                                <div class="form-text" th:text="${form.id == null} ? 'Required, at least 10 characters.' : 'Leave blank to keep the current password.'">Hint</div>
+                                <div class="invalid-feedback" th:errors="*{password}">Error</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="role" class="form-label">Role</label>
+                                <select class="form-select" id="role" th:field="*{role}">
+                                    <option th:each="r : ${roles}" th:value="${r}" th:text="${r}">USER</option>
+                                </select>
+                                <div class="invalid-feedback d-block" th:errors="*{role}">Error</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enabled" th:field="*{enabled}">
+                                    <label class="form-check-label" for="enabled">Account active</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="locked" th:field="*{locked}">
+                                    <label class="form-check-label" for="locked">Account locked</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- mailbox -->
+                <div class="card mb-4">
+                    <div class="card-header bg-transparent fw-semibold"><i class="bi bi-hdd-network me-2"></i>Mailbox (SMTP / POP3)</div>
+                    <div class="card-body">
+                        <p class="small text-body-secondary">
+                            The login is the full email address used as sender. The password is stored encrypted (AES-256-GCM).
+                            Blank hosts and ports use the server defaults.
+                            <span th:if="${form.id != null}">Leave the password empty to keep the current one.</span>
+                        </p>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="mailUsername">Mailbox login (email address)</label>
+                                <input type="text" class="form-control" id="mailUsername" th:field="*{mail.mailUsername}" autocomplete="off">
+                                <div class="invalid-feedback d-block" th:errors="*{mail.mailUsername}">Error</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="mailPassword">Mailbox password</label>
+                                <input type="password" class="form-control" id="mailPassword" th:field="*{mail.mailPassword}" autocomplete="new-password">
+                                <div class="invalid-feedback d-block" th:errors="*{mail.mailPassword}">Error</div>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label" for="smtpHost">SMTP host</label>
+                                <input type="text" class="form-control" id="smtpHost" th:field="*{mail.smtpHost}" placeholder="smtp.example.com">
+                                <div class="invalid-feedback d-block" th:errors="*{mail.smtpHost}">Error</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="smtpPort">SMTP port</label>
+                                <input type="number" class="form-control" id="smtpPort" th:field="*{mail.smtpPort}" placeholder="587">
+                                <div class="invalid-feedback d-block" th:errors="*{mail.smtpPort}">Error</div>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label" for="pop3Host">POP3 host</label>
+                                <input type="text" class="form-control" id="pop3Host" th:field="*{mail.pop3Host}" placeholder="pop.example.com">
+                                <div class="invalid-feedback d-block" th:errors="*{mail.pop3Host}">Error</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="pop3Port">POP3 port</label>
+                                <input type="number" class="form-control" id="pop3Port" th:field="*{mail.pop3Port}" placeholder="995">
+                                <div class="invalid-feedback d-block" th:errors="*{mail.pop3Port}">Error</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-check2 me-1"></i><span th:text="${form.id == null} ? 'Create account' : 'Save changes'">Save</span>
+                    </button>
+                    <a th:href="@{/admin/users}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<th:block th:replace="~{fragments/head :: scripts}"></th:block>
+</body>
+</html>

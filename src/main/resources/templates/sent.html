@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head('Sent')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar('mail')}"></nav>
+
+<main class="container-xl py-4">
+    <div class="row g-4">
+        <div class="col-lg-3 col-xl-2">
+            <aside th:replace="~{fragments/navbar :: mailSidebar('sent')}"></aside>
+        </div>
+
+        <div class="col-lg-9 col-xl-10">
+            <div th:replace="~{fragments/navbar :: flash}"></div>
+
+            <h1 class="h4 fw-bold mb-3"><i class="bi bi-send me-2"></i>Sent</h1>
+
+            <div class="card">
+                <div class="list-group list-group-flush">
+                    <a th:each="m : ${page.content}" th:href="@{/message/{id}(id=${m.id})}"
+                       class="list-group-item list-group-item-action mail-row">
+                        <i class="bi bi-send-check mail-icon"></i>
+                        <div class="mail-main">
+                            <div class="mail-from text-truncate">To: <span th:text="${m.recipients}">recipient@example.com</span></div>
+                            <div class="mail-subject text-truncate" th:text="${#strings.isEmpty(m.subject)} ? '(no subject)' : ${m.subject}">Subject</div>
+                        </div>
+                        <div class="mail-date" th:text="${#temporals.format(m.date, 'dd MMM yyyy, HH:mm')}">01 Jan 2026, 10:00</div>
+                    </a>
+
+                    <div th:if="${page.empty}" class="text-center text-body-secondary py-5">
+                        <i class="bi bi-send fs-1 d-block mb-2"></i>
+                        Nothing sent yet. <a th:href="@{/compose}" class="text-decoration-none">Write your first email</a>.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <nav th:replace="~{fragments/navbar :: pager(${page}, '/sent')}"></nav>
+            </div>
+        </div>
+    </div>
+</main>
+
+<th:block th:replace="~{fragments/head :: scripts}"></th:block>
+</body>
+</html>

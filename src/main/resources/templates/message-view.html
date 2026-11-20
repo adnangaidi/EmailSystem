@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head(${email.subject})}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar('mail')}"></nav>
+
+<main class="container-xl py-4">
+    <div class="row g-4">
+        <div class="col-lg-3 col-xl-2">
+            <aside th:replace="~{fragments/navbar :: mailSidebar(${email.folder.name() == 'SENT' ? 'sent' : (email.folder.name() == 'TRASH' ? 'trash' : 'inbox')})}"></aside>
+        </div>
+
+        <div class="col-lg-9 col-xl-10">
+            <div th:replace="~{fragments/navbar :: flash}"></div>
+
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <a th:href="${email.folder.name() == 'SENT'} ? @{/sent} : (${email.folder.name() == 'TRASH'} ? @{/trash} : @{/inbox})"
+                   class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back</a>
+
+                <div class="d-flex gap-2">
+                    <a th:if="${email.folder.name() == 'INBOX'}" th:href="@{/compose(to=${email.sender})}"
+                       class="btn btn-outline-primary btn-sm"><i class="bi bi-reply me-1"></i>Reply</a>
+                    <form th:action="@{/message/{id}/delete(id=${email.id})}" method="post"
+                          th:attr="data-confirm=${email.folder.name() == 'TRASH'} ? 'Delete this message permanently?' : 'Move this message to Trash?'">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                            <i class="bi bi-trash3 me-1"></i><span th:text="${email.folder.name() == 'TRASH'} ? 'Delete forever' : 'Delete'">Delete</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <article class="card">
+                <div class="card-body p-4">
+                    <h1 class="h4 fw-bold mb-3" th:text="${#strings.isEmpty(email.subject)} ? '(no subject)' : ${email.subject}">Subject</h1>
+
+                    <div class="d-flex align-items-start gap-3 pb-3 mb-3 border-bottom">
+                        <i class="bi bi-person-circle fs-2 text-body-secondary"></i>
+                        <div class="flex-grow-1" style="min-width:0">
+                            <div class="fw-semibold text-break" th:text="${email.sender}">sender@example.com</div>
+                            <div class="small text-body-secondary text-break">To: <span th:text="${email.recipients}">me@example.com</span></div>
+                        </div>
+                        <div class="small text-body-secondary text-nowrap" th:text="${#temporals.format(email.date, 'dd MMM yyyy, HH:mm')}">01 Jan 2026</div>
+                    </div>
+
+                    <!-- body is sanitized server-side (OWASP policy) before it reaches th:utext -->
+                    <div class="mail-body" th:utext="${email.body}">Message body</div>
+
+                    <div th:if="${!email.attachments.isEmpty()}" class="mt-4 pt-3 border-top">
+                        <div class="small fw-semibold text-body-secondary mb-2">
+                            <i class="bi bi-paperclip me-1"></i><span th:text="${email.attachments.size()}">1</span> attachment(s)
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a th:each="a : ${email.attachments}" th:href="@{/attachment/{id}(id=${a.id})}" class="attachment-chip">
+                                <i class="bi bi-file-earmark-arrow-down"></i>
+                                <span th:text="${a.filename}">file.pdf</span>
+                                <span class="text-body-secondary" th:text="'(' + ${#numbers.formatDecimal(a.size / 1024.0, 1, 1)} + ' KB)'">(12.0 KB)</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+</main>
+
+<th:block th:replace="~{fragments/head :: scripts}"></th:block>
+</body>
+</html>

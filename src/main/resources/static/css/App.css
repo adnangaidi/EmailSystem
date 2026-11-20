@@ -1,0 +1,90 @@
+:root {
+    --brand: #4f46e5;
+    --brand-dark: #4338ca;
+    --bs-primary: #4f46e5;
+    --bs-primary-rgb: 79, 70, 229;
+    --bs-link-color: #4f46e5;
+    --bs-link-color-rgb: 79, 70, 229;
+    --bs-link-hover-color: #4338ca;
+    --bs-link-hover-color-rgb: 67, 56, 202;
+    --bs-border-radius: .65rem;
+    --bs-border-radius-lg: .9rem;
+}
+[data-bs-theme="dark"] {
+    --bs-link-color: #a5b4fc;
+    --bs-link-color-rgb: 165, 180, 252;
+    --bs-link-hover-color: #c7d2fe;
+    --bs-link-hover-color-rgb: 199, 210, 254;
+}
+
+body { background-color: var(--bs-tertiary-bg); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+
+.btn-primary {
+    --bs-btn-bg: #4f46e5; --bs-btn-border-color: #4f46e5;
+    --bs-btn-hover-bg: #4338ca; --bs-btn-hover-border-color: #4338ca;
+    --bs-btn-active-bg: #3730a3; --bs-btn-active-border-color: #3730a3;
+    --bs-btn-disabled-bg: #4f46e5; --bs-btn-disabled-border-color: #4f46e5;
+}
+.btn-outline-primary {
+    --bs-btn-color: #4f46e5; --bs-btn-border-color: #4f46e5;
+    --bs-btn-hover-bg: #4f46e5; --bs-btn-hover-border-color: #4f46e5;
+    --bs-btn-active-bg: #4338ca; --bs-btn-active-border-color: #4338ca;
+}
+.form-control:focus, .form-select:focus, .form-check-input:focus {
+    border-color: #818cf8; box-shadow: 0 0 0 .25rem rgba(79, 70, 229, .2);
+}
+.form-check-input:checked { background-color: #4f46e5; border-color: #4f46e5; }
+.page-link { color: var(--brand); }
+.page-item.active .page-link { background-color: var(--brand); border-color: var(--brand); color: #fff; }
+
+/* ---- navbar */
+.app-navbar { backdrop-filter: blur(8px); background-color: rgba(var(--bs-body-bg-rgb), .85); }
+.brand-mark {
+    display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: .6rem;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; font-size: 1.05rem;
+}
+
+/* ---- auth pages */
+.auth-bg {
+    min-height: 100vh;
+    background: radial-gradient(1200px 600px at 10% -10%, rgba(124, 58, 237, .35), transparent),
+    radial-gradient(900px 500px at 110% 110%, rgba(79, 70, 229, .35), transparent),
+    var(--bs-tertiary-bg);
+}
+.auth-card { max-width: 440px; width: 100%; border: 0; box-shadow: 0 1.25rem 3rem rgba(15, 23, 42, .15); }
+.auth-card.wide { max-width: 640px; }
+.brand-lg { width: 3.25rem; height: 3.25rem; font-size: 1.6rem; border-radius: .9rem; }
+
+/* ---- cards */
+.card { border: 1px solid var(--bs-border-color-translucent); box-shadow: 0 .125rem .5rem rgba(15, 23, 42, .04); }
+
+/* ---- mail sidebar */
+.mail-sidebar .list-group-item { border: 0; border-radius: .6rem !important; margin-bottom: .15rem; }
+.mail-sidebar .list-group-item.active { background-color: rgba(79, 70, 229, .12); color: var(--brand); font-weight: 600; }
+[data-bs-theme="dark"] .mail-sidebar .list-group-item.active { color: #c7d2fe; background-color: rgba(129, 140, 248, .18); }
+
+/* ---- mail list */
+.mail-row { display: flex; align-items: center; gap: .9rem; padding: .85rem 1.1rem; border-left: 3px solid transparent; }
+.mail-row .mail-icon { font-size: 1.6rem; color: var(--bs-secondary-color); flex: none; }
+.mail-row .mail-main { min-width: 0; flex: 1 1 auto; }
+.mail-row .mail-from { font-size: .95rem; }
+.mail-row .mail-subject { font-size: .9rem; color: var(--bs-secondary-color); }
+.mail-row .mail-date { font-size: .8rem; color: var(--bs-secondary-color); white-space: nowrap; flex: none; }
+.mail-row.unread { border-left-color: var(--brand); background-color: rgba(79, 70, 229, .05); }
+.mail-row.unread .mail-from, .mail-row.unread .mail-subject { font-weight: 700; color: var(--bs-body-color); }
+
+/* ---- message view */
+.mail-body { overflow-wrap: anywhere; line-height: 1.65; }
+.mail-body img { max-width: 100%; height: auto; }
+.mail-body blockquote { border-left: 3px solid var(--bs-border-color); padding-left: 1rem; color: var(--bs-secondary-color); }
+.attachment-chip { display: inline-flex; align-items: center; gap: .5rem; padding: .4rem .75rem; border: 1px solid var(--bs-border-color); border-radius: 2rem; text-decoration: none; font-size: .875rem; }
+.attachment-chip:hover { background-color: var(--bs-secondary-bg); }
+
+/* ---- admin */
+.stat-card .stat-icon { width: 2.75rem; height: 2.75rem; display: grid; place-items: center; border-radius: .8rem; font-size: 1.35rem; }
+.stat-card .stat-value { font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
+.table > :not(caption) > * > * { padding-top: .8rem; padding-bottom: .8rem; }
+.table-actions form { display: inline; }
+
+/* ---- error pages */
+.error-code { font-size: 5.5rem; font-weight: 800; line-height: 1; background: linear-gradient(135deg, #4f46e5, #7c3aed); -webkit-background-clip: text; background-clip: text; color: transparent; }

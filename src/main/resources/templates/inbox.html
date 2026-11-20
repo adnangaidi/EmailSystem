@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head(${folder == 'TRASH'} ? 'Trash' : 'Inbox')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar('mail')}"></nav>
+
+<main class="container-xl py-4">
+    <div class="row g-4">
+        <div class="col-lg-3 col-xl-2">
+            <aside th:replace="~{fragments/navbar :: mailSidebar(${folder == 'TRASH'} ? 'trash' : 'inbox')}"></aside>
+        </div>
+
+        <div class="col-lg-9 col-xl-10">
+            <div th:replace="~{fragments/navbar :: flash}"></div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="h4 fw-bold mb-0">
+                    <i class="bi me-2" th:classappend="${folder == 'TRASH'} ? 'bi-trash3' : 'bi-inbox'"></i>
+                    <span th:text="${folder == 'TRASH'} ? 'Trash' : 'Inbox'">Inbox</span>
+                </h1>
+                <form th:if="${folder == 'INBOX'}" th:action="@{/inbox/sync}" method="post">
+                    <button type="submit" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-arrow-repeat me-1"></i>Check mail
+                    </button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="list-group list-group-flush">
+                    <a th:each="m : ${page.content}" th:href="@{/message/{id}(id=${m.id})}"
+                       class="list-group-item list-group-item-action mail-row"
+                       th:classappend="${!m.read} ? 'unread'">
+                        <i class="bi bi-person-circle mail-icon"></i>
+                        <div class="mail-main">
+                            <div class="mail-from text-truncate" th:text="${m.sender}">sender@example.com</div>
+                            <div class="mail-subject text-truncate" th:text="${#strings.isEmpty(m.subject)} ? '(no subject)' : ${m.subject}">Subject</div>
+                        </div>
+                        <div class="mail-date" th:text="${#temporals.format(m.date, 'dd MMM yyyy, HH:mm')}">01 Jan 2026, 10:00</div>
+                    </a>
+
+                    <div th:if="${page.empty}" class="text-center text-body-secondary py-5">
+                        <i class="bi bi-envelope-open fs-1 d-block mb-2"></i>
+                        <span th:text="${folder == 'TRASH'} ? 'Trash is empty.' : 'No messages yet.'">No messages yet.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-3" th:with="base=${folder == 'TRASH'} ? '/trash' : '/inbox'">
+                <nav th:replace="~{fragments/navbar :: pager(${page}, ${base})}"></nav>
+            </div>
+        </div>
+    </div>
+</main>
+
+<th:block th:replace="~{fragments/head :: scripts}"></th:block>
+</body>
+</html>
